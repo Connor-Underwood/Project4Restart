@@ -1,0 +1,7 @@
+Format below:
+PIN,email,password
+E.g. -> 1001,seller@seller.com,seller
+E.g. -> 15555,customer@customer.com,customer
+
+Seller's PIN is ALWAYS 4 DIGITS
+Customer's PIN is ALWAYS 5 DIGITS
