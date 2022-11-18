@@ -1,0 +1,9 @@
+int storeIndex = 0;
+        for (int i = 0; i < seller.getStores().size(); i++) {
+            if (seller.getStores().get(i).getName().equals("Nike")) {
+                storeIndex = i;
+            }
+        }
+        Store store = seller.getStores().get(storeIndex);
+        seller.removeShoe(store, new Shoe(store, "Retro 4's", "Fast", 1600, 15), true);
+        sellers.set(index, seller);

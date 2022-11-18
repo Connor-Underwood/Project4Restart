@@ -1,0 +1,13 @@
+Store tempStore = new Store("Under Armour", seller);
+        seller.addStore(tempStore, true);
+        sellers.set(index, seller);
+
+THIS IS ALSO HOW WE RETRIEVE THE SPECIFIC SELLER WE WANT
+int index = -1;
+        for (Seller seller : sellers) {
+            if (seller.getPin().equals("1515")) {
+                index = sellers.indexOf(seller);
+            }
+        }
+
+        Seller seller = sellers.get(index);

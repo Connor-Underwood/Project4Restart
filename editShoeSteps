@@ -1,0 +1,54 @@
+System.out.println("What store does the shoe belong in?");
+        String storeName = scanner.nextLine();
+        System.out.println("What shoe do you want to edit");
+        String shoeName = scanner.nextLine();
+        int storeIndex = 0;
+        for (int i = 0; i < seller.getStores().size(); i++) {
+            if (seller.getStores().get(i).getName().equalsIgnoreCase(storeName)) {
+                storeIndex = i;
+            }
+        }
+        Store store = seller.getStores().get(storeIndex);
+        int shoeIndex = 0;
+        for (int i = 0; i < store.getShoes().size(); i++) {
+            if (store.getShoes().get(i).getName().equalsIgnoreCase(shoeName)) {
+                shoeIndex = i;
+            }
+        }
+        Shoe shoe = store.getShoes().get(shoeIndex);
+        seller.removeShoe(store, shoe, true); // lets change this to true if we run into an error
+
+
+        String newShoeName = shoe.getName();
+        String newShoeDescription = shoe.getDescription();
+        double newPrice = shoe.getPrice();
+        int newQuantity = shoe.getQuantity();
+
+        System.out.println("Do you want to change the name of the Shoe? (y/n)");
+        String response = scanner.nextLine();
+        if (response.equalsIgnoreCase("y")) {
+            System.out.println("What do you want the name of the shoe to be?");
+            newShoeName = scanner.nextLine();
+        }
+        System.out.println("Do you want to change the description?(y/n)");
+        response = scanner.nextLine();
+        if (response.equalsIgnoreCase("y")) {
+            System.out.println("What do want the description of the shoe to be?");
+            newShoeDescription = scanner.nextLine();
+        }
+        System.out.println("Do want to change the price?(y/n)");
+        response = scanner.nextLine();
+        if (response.equalsIgnoreCase("y")) {
+            System.out.println("What do want the price of the shoe to be?");
+            newPrice = scanner.nextDouble();
+            scanner.nextLine();
+        }
+        System.out.println("Do you want to change the quantity?(y/n)");
+        response = scanner.nextLine();
+        if (response.equalsIgnoreCase("y")) {
+            System.out.println("What do you want the quantity of the shoe to be?");
+            newQuantity = scanner.nextInt();
+            scanner.nextLine();
+        }
+        seller.addShoe(store, new Shoe(store, newShoeName, newShoeDescription, newPrice, newQuantity), true);
+        sellers.set(index, seller);
