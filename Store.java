@@ -26,6 +26,11 @@ public class Store {
 
     private ArrayList<Customer> customers; // each store has a list of customers that have purchased something from them
 
+    /**
+     *
+     * @param name read from market.csv
+     * @param seller created from market.csv
+     */
     public Store(String name, Seller seller) { // to make a store, you only need a name
         this.sales = 0; // initialize sales to 0, may have to change this when we
         // implement customers because when we read from file we need to get the sales of store
@@ -41,7 +46,13 @@ public class Store {
         // so we can add customers to it if they purchase from this store specifically
     }
 
-
+    /**
+     * In case we ever need to find the seller of this Store object
+     * @return
+     */
+    public Seller getSeller() {
+        return this.seller;
+    }
     /**
      * Sellers should be able to call this method in their ArrayList
      * of Stores to add a Shoe object to that specific Store
@@ -49,7 +60,16 @@ public class Store {
      * @param shoe
      */
     public void addShoe(Shoe shoe) {
-        this.shoes.add(shoe);
+        int count = 0;
+        for (int i = 0; i < shoes.size(); i++) {
+            if (shoe.getName().equalsIgnoreCase(shoes.get(i).getName())) {
+                count++;
+            }
+        }
+        if (count == 0) {
+            this.shoes.add(shoe);
+        }
+
     }
 
 
@@ -61,7 +81,11 @@ public class Store {
      * @param shoe
      */
     public void removeShoe(Shoe shoe) {
-        this.shoes.remove(shoe);
+        for (int i = 0; i < shoes.size(); i++) {
+            if (shoes.get(i).equalsShoe(shoe)) {
+                shoes.remove(shoes.get(i));
+            }
+        }
     }
 
     /**
@@ -80,7 +104,28 @@ public class Store {
         return this.name;
     }
 
+    /**
+     * @return The shoes ArrayList of this Store
+     */
+    public ArrayList<Shoe> getShoes() {
+        return this.shoes;
+    }
 
+    public int getSales() {
+        return sales;
+    }
+
+    public void setSales(int sales) {
+        this.sales = sales;
+    }
+
+    public ArrayList<Customer> getCustomers() {
+        return this.customers;
+    }
+
+    public void addCustomer(Customer customer) {
+        this.customers.add(customer);
+    }
 
     /**
      * Discuss with team how we want to do this
@@ -89,6 +134,27 @@ public class Store {
      * E.g. all params are equal
      */
     public boolean equalsStore(Object obj) {
-        return true;
+        if (obj instanceof Store) {
+            Store store = (Store) obj;
+            return (store.getSeller().equalsSeller(this.seller) && store.getName().equalsIgnoreCase(this.name) &&
+                    store.getSales() == this.sales && store.getShoes().equals(this.shoes)
+                    && store.getCustomers().equals(this.customers));
+        }
+        return false;
+    }
+
+    /**
+     * @param shoe A shoe object we use to check if this Store object's contains it inside of it's ArrayList
+     * of Shoe objects
+     * @return Returns a boolean value determining if this Store object's ArrayList of Shoes contains
+     * this shoe object
+     */
+    public boolean checkShoe(Shoe shoe) {
+        for (Shoe shoo : shoes) {
+            if (shoo.equalsShoe(shoe)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
