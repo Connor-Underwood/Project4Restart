@@ -11,12 +11,11 @@ public class Shoe {
     private double price; // each shoe has a double price
 
     /**
-     * @param store Store object
-     * @param name String name
-     * @param description String description
-     * @param price double price
-     * @param quantity int quantity
-     * Order of params is the order in which we read from the
+     * @param store Store object, read from market.csv
+     * @param name String name, read from market.csv
+     * @param description String description, read from market.csv
+     * @param price double price, read from market.csv
+     * @param quantity int quantity, read from market.csv
      */
     public Shoe(Store store, String name, String description, double price, int quantity) {
         this.store = store;
@@ -97,11 +96,18 @@ public class Shoe {
     }
 
     /**
-     * Discuss with team how we want to do this
+     * Determines if obj param is equal to this Shoe object
      * @param obj
      * @return True if obj equals this Shoe object
      */
     public boolean equalsShoe(Object obj) {
-        return true;
+        if (obj instanceof Shoe) {
+            Shoe shoe = (Shoe) obj;
+            // equalsIgnoreCase is more user-friendly when they input
+            return ((shoe.getName().equalsIgnoreCase(this.name)) &&
+                    (shoe.getDescription().equalsIgnoreCase(this.description)) && (shoe.getQuantity() == this.quantity)
+            && (shoe.getPrice() == this.price));
+        }
+        return false;
     }
 }
