@@ -1,4 +1,3 @@
-import javax.management.relation.RelationNotFoundException;
 import java.util.ArrayList;
 import java.io.*;
 import java.util.Random;
@@ -21,6 +20,9 @@ public class MarketPlace {
     public static final String LOGIN_PASSWORD_PROMPT = "Please enter your password.";
     public static final String CREATE_PASSWORD_PROMPT = "Create a password greater than 5 characters.";
     public static final String CUSTOMER_OR_SELLER = "Choose your User Type\n1: Seller\n2: Customer";
+    public static final String LOGIN_SUCCESSFUL = "Login Successful!";
+    public static final String WRONG_EMAIL = "The email you entered is incorrect. Please enter another email";
+    public static final String WRONG_PASSWORD = "The password you entered is incorrect. Please enter another password";
 
     // Seller Prompts
     public static final String ADD_STORE = "1: Add a store.";
@@ -121,7 +123,7 @@ public class MarketPlace {
         }
     }
     public static boolean checkEmail(String email) {
-        try (BufferedReader reader = new BufferedReader(new FileReader("accounts.csv"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/accounts.csv"))) {
             String line = "";
             while ((line = reader.readLine()) != null) {
                 String usedEmail = line.split(",")[1];
@@ -137,7 +139,7 @@ public class MarketPlace {
         }
     }
     public static boolean checkPin(String pin) {
-        try (BufferedReader reader = new BufferedReader(new FileReader("accounts.csv"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/accounts.csv"))) {
             String line = "";
             while ((line = reader.readLine()) != null) {
                 String usedPin = line.split(",")[0];
@@ -146,6 +148,21 @@ public class MarketPlace {
                 }
             }
             return true;
+        } catch (IOException io) {
+            System.out.println("Error reading to the accounts.csv file.");
+            return false;
+        }
+    }
+    public static boolean checkPassword(String email, String password) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/accounts.csv"))) {
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                String[] arr = line.split(",");
+                if (arr[1].equalsIgnoreCase(email) && arr[2].equals(password)) {
+                    return true;
+                }
+            }
+            return false;
         } catch (IOException io) {
             System.out.println("Error reading to the accounts.csv file.");
             return false;
@@ -174,12 +191,25 @@ public class MarketPlace {
          * Sign-In Implementation
          */
         if ("1".equals(choice)) {
-            // zeyad start here...
+            System.out.println(ENTER_YOUR_EMAIL);
+            email = scanner.nextLine();
+            while (checkEmail(email)) { // while check e-mail is true, then the email they entered is not in the file, so keep asking for a valid email
+                System.out.println(WRONG_EMAIL);
+                email = scanner.nextLine();
+            }
+            System.out.println(LOGIN_PASSWORD_PROMPT);
+            password = scanner.nextLine();
+            while (!checkPassword(email, password)) { // while the password is not in the file, keep asking them to enter a new password
+                System.out.println(WRONG_PASSWORD);
+                password = scanner.nextLine();
+            }
+            System.out.println(LOGIN_SUCCESSFUL); // when the email and password are correct print the login successful prompt.
+
         } else {
             /**
              * Create an Account Implementation
              */
-            File f = new File("accounts.csv"); // if it is the VERY FIRST USER, accounts.csv does NOT EXIST!!
+            File f = new File("src/accounts.csv"); // if it is the VERY FIRST USER, accounts.csv does NOT EXIST!!
             if (!f.exists()) {
                 try {
                     boolean b = f.createNewFile();
@@ -230,7 +260,7 @@ public class MarketPlace {
              * At this point, they have created an account with completely valid credentials, so now we can write
              * to accounts.csv
              */
-            try (PrintWriter writer = new PrintWriter(new FileWriter("accounts.csv", true))) {
+            try (PrintWriter writer = new PrintWriter(new FileWriter("src/accounts.csv", true))) {
                 writer.println(pin + "," + email + "," + password + ",");
             } catch (IOException io) {
                 System.out.println("Error writing to the accounts.csv file.");
