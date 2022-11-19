@@ -59,7 +59,7 @@ public class Store {
      * Adds a Shoe object to this Store's Shoe ArrayList
      * @param shoe
      */
-    public void addShoe(Shoe shoe) {
+    public boolean addShoe(Shoe shoe) {
         int count = 0;
         for (int i = 0; i < shoes.size(); i++) {
             if (shoe.getName().equalsIgnoreCase(shoes.get(i).getName())) {
@@ -68,8 +68,10 @@ public class Store {
         }
         if (count == 0) {
             this.shoes.add(shoe);
+            return true;
+        } else {
+            return false;
         }
-
     }
 
 
