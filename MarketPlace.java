@@ -123,7 +123,7 @@ public class MarketPlace {
         }
     }
     public static boolean checkEmail(String email) {
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/accounts.csv"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("accounts.csv"))) {
             String line = "";
             while ((line = reader.readLine()) != null) {
                 String usedEmail = line.split(",")[1];
@@ -139,7 +139,7 @@ public class MarketPlace {
         }
     }
     public static boolean checkPin(String pin) {
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/accounts.csv"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("accounts.csv"))) {
             String line = "";
             while ((line = reader.readLine()) != null) {
                 String usedPin = line.split(",")[0];
@@ -154,7 +154,7 @@ public class MarketPlace {
         }
     }
     public static boolean checkPassword(String email, String password) {
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/accounts.csv"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("accounts.csv"))) {
             String line = "";
             while ((line = reader.readLine()) != null) {
                 String[] arr = line.split(",");
@@ -193,7 +193,7 @@ public class MarketPlace {
         if ("1".equals(choice)) {
             System.out.println(ENTER_YOUR_EMAIL);
             email = scanner.nextLine();
-            while (checkEmail(email)) { // while check e-mail is true, then the email they entered is not in the file, so keep asking for a valid email
+            while (checkEmail(email)) { // if check e-mail is true, then the email they entered is not in the file, so keep asking for a valid email
                 System.out.println(WRONG_EMAIL);
                 email = scanner.nextLine();
             }
@@ -209,7 +209,7 @@ public class MarketPlace {
             /**
              * Create an Account Implementation
              */
-            File f = new File("src/accounts.csv"); // if it is the VERY FIRST USER, accounts.csv does NOT EXIST!!
+            File f = new File("accounts.csv"); // if it is the VERY FIRST USER, accounts.csv does NOT EXIST!!
             if (!f.exists()) {
                 try {
                     boolean b = f.createNewFile();
@@ -260,7 +260,7 @@ public class MarketPlace {
              * At this point, they have created an account with completely valid credentials, so now we can write
              * to accounts.csv
              */
-            try (PrintWriter writer = new PrintWriter(new FileWriter("src/accounts.csv", true))) {
+            try (PrintWriter writer = new PrintWriter(new FileWriter("accounts.csv", true))) {
                 writer.println(pin + "," + email + "," + password + ",");
             } catch (IOException io) {
                 System.out.println("Error writing to the accounts.csv file.");
