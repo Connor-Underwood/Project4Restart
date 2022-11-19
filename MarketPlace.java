@@ -1,3 +1,4 @@
+import javax.management.relation.RelationNotFoundException;
 import java.util.ArrayList;
 import java.io.*;
 import java.util.Random;
@@ -129,6 +130,7 @@ public class MarketPlace {
                 String usedEmail = line.split(",")[1];
                 if (usedEmail.equalsIgnoreCase(email)) {
                     return false;
+
                 }
             }
             reader.close();
@@ -205,6 +207,26 @@ public class MarketPlace {
             }
             System.out.println(LOGIN_SUCCESSFUL); // when the email and password are correct print the login successful prompt.
 
+            try(BufferedReader reader = new BufferedReader(new FileReader("accounts.csv"))) {
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    String [] arr = line.split(",");
+                    if (arr[1].equalsIgnoreCase(email) && arr[2].equals(password)) {
+                        if (Integer.parseInt(arr[0]) < 10000) {
+                            userType = 1;
+                            pin = Integer.parseInt(arr[0]);
+                        } else {
+                            userType = 2;
+                            pin = Integer.parseInt(arr[0]);
+                        }
+                    }
+                }
+            } catch (IOException io) {
+                System.out.println("Error reading to the accounts.csv file.");
+            }
+
+
+
         } else {
             /**
              * Create an Account Implementation
@@ -262,12 +284,221 @@ public class MarketPlace {
              */
             try (PrintWriter writer = new PrintWriter(new FileWriter("accounts.csv", true))) {
                 writer.println(pin + "," + email + "," + password + ",");
+                writer.flush();
             } catch (IOException io) {
                 System.out.println("Error writing to the accounts.csv file.");
             }
 
+            if (userType == 1) {
+                try (PrintWriter writer = new PrintWriter(new FileWriter("market.csv", true))) {
+                    writer.println(pin + "," + email + "," + password + ",");
+                    writer.flush();
+                } catch (IOException io) {
+                    System.out.println("Error writing to the market.csv file.");
+                }
+                Seller seller = new Seller(Integer.toString(pin), email, password); // make a new Seller object
+                sellers.add(seller); // add it to the arrayList of Sellers because they just made an account
+            } else {
+                // implement this later. means they are a customer, so add to customers arraylist
+            }
         }
 
 
+        if (userType == 1) { // They are a seller
+            /**
+             * Below is how we get our Seller object
+             */
+            int index = -1;
+            for (Seller seller : sellers) {
+                if (seller.getPin().equals(Integer.toString(pin))) {
+                    index = sellers.indexOf(seller);
+                }
+            }
+            Seller seller = sellers.get(index);
+
+
+            System.out.println("Welcome Seller!");
+            boolean keepGoing = true;
+            do {
+                String storeName = "";
+                String shoeName = "";
+                System.out.println(ADD_STORE);
+                System.out.println(ADD_SHOE);
+                System.out.println(REMOVE_SHOE);
+                System.out.println(EDIT_SHOE);
+                System.out.println(VIEW_STORES);
+                System.out.println(CHANGE_EMAIL);
+                System.out.println(CHANGE_PASSWORD);
+                choice = scanner.nextLine();
+                switch (choice) {
+                    case "1":
+                        System.out.println("What is the name of the store you would like to add?");
+                        storeName = scanner.nextLine();
+                        Store tempStore = new Store(storeName, seller);
+                        seller.addStore(tempStore, true);
+                        sellers.set(index, seller);
+                        break;
+                    case "2":
+                        System.out.println("What is the name of the shoe you would like to add?");
+                        shoeName = scanner.nextLine();
+                        System.out.println("What is the name of the store you would like to add the shoe to?");
+                        storeName = scanner.nextLine();
+                        int storeIndex = -1;
+                        for (int i = 0; i < seller.getStores().size(); i++) {
+                            if (seller.getStores().get(i).getName().equals(storeName)) {
+                                storeIndex = i;
+                            }
+                        }
+                        if (storeIndex == -1) { // means they didn't find a store in this Seller's arrayList of Stores
+                            System.out.println("You don't own this store!");
+                        } else {
+                            Store store = seller.getStores().get(storeIndex); // find the specific store
+                            System.out.println("What is the description of the shoe?");
+                            String desc = scanner.nextLine();
+                            System.out.println("What is the price of the shoe?");
+                            double price = scanner.nextDouble();
+                            scanner.nextLine();
+                            System.out.println("What is the quantity of the shoe?");
+                            int quantity = scanner.nextInt();
+                            scanner.nextLine();
+                            Shoe shoe = new Shoe(store, shoeName, desc, price, quantity);
+                            if (seller.addShoe(store, shoe, true)) {
+                                sellers.set(index, seller);
+                            } else {
+                                System.out.println("Could not add " + shoe.getName() + " to " + store.getName() + ".");
+                            }
+                        }
+                        break;
+                    case "3":
+                        System.out.println("What is the name of the shoe you would like to remove?");
+                        shoeName = scanner.nextLine();
+                        System.out.println("What is the name of the store you would like to remove the shoe from?");
+                        storeName = scanner.nextLine();
+                        storeIndex = -1;
+                        for (int i = 0; i < seller.getStores().size(); i++) {
+                            if (seller.getStores().get(i).getName().equals(storeName)) {
+                                storeIndex = i;
+                            }
+                        }
+                        if (storeIndex == -1) {
+                            System.out.println("You don't own this store!");
+                        } else {
+                            Store store = seller.getStores().get(storeIndex);
+                            System.out.println("What is the description of the shoe you would like to remove?");
+                            String desc = scanner.nextLine();
+                            System.out.println("What is the price of the shoe you would like to remove?");
+                            double price = scanner.nextDouble();
+                            scanner.nextLine();
+                            System.out.println("What is the quantity of the shoe you would like to remove");
+                            int quantity = scanner.nextInt();
+                            scanner.nextLine();
+                            Shoe shoe = new Shoe(store, shoeName, desc, price, quantity);
+                            if (seller.removeShoe(store, shoe, true)) {
+                                sellers.set(index, seller);
+                            } else {
+                                System.out.println("Could not remove " + shoe.getName() + " from " + store.getName() + ".");
+                            }
+                        }
+                        break;
+                    case "4":
+                        System.out.println("What shoe do you want to edit");
+                        shoeName = scanner.nextLine();
+                        System.out.println("What store does the shoe belong in?");
+                        storeName = scanner.nextLine();
+                        storeIndex = -1;
+                        for (int i = 0; i < seller.getStores().size(); i++) {
+                            if (seller.getStores().get(i).getName().equalsIgnoreCase(storeName)) {
+                                storeIndex = i;
+                            }
+                        }
+                        if (storeIndex == -1) {
+                            System.out.println("You don't own this store!");
+                        } else {
+                            Store store = seller.getStores().get(storeIndex);
+                            int shoeIndex = -1;
+                            for (int i = 0; i < store.getShoes().size(); i++) {
+                                if (store.getShoes().get(i).getName().equalsIgnoreCase(shoeName)) {
+                                    shoeIndex = i;
+                                }
+                            }
+                            if (shoeIndex == -1) {
+                                System.out.println(store.getName() + " does not own this shoe!");
+                            } else {
+                                Shoe shoe = store.getShoes().get(shoeIndex);
+                                seller.removeShoe(store, shoe, true); // lets change this to true if we run into an error
+
+                                String newShoeName = shoe.getName();
+                                String newShoeDescription = shoe.getDescription();
+                                double newPrice = shoe.getPrice();
+                                int newQuantity = shoe.getQuantity();
+
+                                System.out.println("Do you want to change the name of the Shoe? (y/n)");
+                                String response = scanner.nextLine();
+                                if (response.equalsIgnoreCase("y")) {
+                                    System.out.println("What do you want the name of the shoe to be?");
+                                    newShoeName = scanner.nextLine();
+                                }
+                                System.out.println("Do you want to change the description?(y/n)");
+                                response = scanner.nextLine();
+                                if (response.equalsIgnoreCase("y")) {
+                                    System.out.println("What do want the description of the shoe to be?");
+                                    newShoeDescription = scanner.nextLine();
+                                }
+                                System.out.println("Do want to change the price?(y/n)");
+                                response = scanner.nextLine();
+                                if (response.equalsIgnoreCase("y")) {
+                                    System.out.println("What do want the price of the shoe to be?");
+                                    newPrice = scanner.nextDouble();
+                                    scanner.nextLine();
+                                }
+                                System.out.println("Do you want to change the quantity?(y/n)");
+                                response = scanner.nextLine();
+                                if (response.equalsIgnoreCase("y")) {
+                                    System.out.println("What do you want the quantity of the shoe to be?");
+                                    newQuantity = scanner.nextInt();
+                                    scanner.nextLine();
+                                }
+                                seller.addShoe(store, new Shoe(store, newShoeName, newShoeDescription, newPrice, newQuantity), true);
+                                sellers.set(index, seller);
+                            }
+                        }
+                        break;
+                    case "5":
+                        break;
+                    case "6":
+                        System.out.println("What do you want your new e-mail to be?");
+                        email = scanner.nextLine();
+                        while (!checkEmail(email)) {
+                            System.out.println(TAKEN_EMAIL);
+                            System.out.println(ENTER_YOUR_EMAIL);
+                            email = scanner.nextLine();
+                        }
+                        seller.setEmail(email);
+                        sellers.set(index, seller);
+                        break;
+                    case "7":
+                        System.out.println("What do you want your new password to be?");
+                        password = scanner.nextLine();
+                        while (password.length() <= 5) {
+                            System.out.println(INVALID_PASSWORD);
+                            password = scanner.nextLine();
+                        }
+                        seller.setPassword(password);
+                        sellers.set(index, seller);
+                        break;
+                    default:
+                        System.out.println(INVALID_VALUE);
+                } // end of Switch for choice variable!!!!
+
+                System.out.println("Would you like to perform any other activity? (y/n)");
+                String response = scanner.nextLine();
+                if ("no".equalsIgnoreCase(response) || "n".equalsIgnoreCase(response)) {
+                    keepGoing = false;
+                }
+            } while (keepGoing);
+        } else { // They are a Customer
+            Customer customer = new Customer("10000", "customer@gmail", password);
+            customer.viewMarket(false, "");
+        }
     }
 }
