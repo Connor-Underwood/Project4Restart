@@ -1,5 +1,17 @@
 Format below:
-PIN,Store1,customer1,customer2
+sellerPIN,sellerEmail,sellerPassword,Store1,
+customer1,customer1info,
+customer2,customer2info
+
 
 Why do we need this file?
-Because
+This file is meant to store customer info from each store. Should help with Statistics selection.
+We have to read from a file to load the customers arrayList in Marketplace main.
+We will read from this file in loadMarket().
+
+
+customerPin,customerEmail,customerPassword,sellerPin,sellerEmail,sellerPassword,Store,
+product1Name,product1desc,product1price,product1quant,
+
+15112,customer@gmail,password,1001,seller@gmail,password,Nike,Jordan Retro's, Athletic Wear,150.00,53,
+15112,customer@gmail,password,1423,seller,passWORD,Nike,Cool Shoes,Gym Attire,134,12
