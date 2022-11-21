@@ -18,11 +18,13 @@ public class Store {
     private Seller seller; // each singular store has only one seller Each store has one seller associated with it
     // Each store has one seller associated with it. Another Seller may not have the same store
 
-    private ArrayList<Shoe> shoes; // each store has a list of shoes
+    public ArrayList<Shoe> shoes; // each store has a list of shoes
 
     private String name; // each store has a name
 
     private int sales; // each store has a number of sales that increase with each purchase from a customer
+
+    private double revenue; // each store has a revenue that increases with each purchase from a customer
 
     private ArrayList<Customer> customers; // each store has a list of customers that have purchased something from them
 
@@ -32,8 +34,9 @@ public class Store {
      * @param seller created from market.csv
      */
     public Store(String name, Seller seller) { // to make a store, you only need a name
-        this.sales = 0; // initialize sales to 0, may have to change this when we
+        this.sales = 0; // initialize revenue to 0, may have to change this when we
         // implement customers because when we read from file we need to get the sales of store
+        this.revenue = 0; // increase this as we read through file
 
         this.name = name; // passed through constructor from file we read from
 
@@ -44,6 +47,14 @@ public class Store {
 
         this.customers = new ArrayList<>(); // new arraylist of customers for every store that is created,
         // so we can add customers to it if they purchase from this store specifically
+    }
+
+    public double getRevenue() {
+        return revenue;
+    }
+
+    public void setRevenue(double revenue) {
+        this.revenue = revenue;
     }
 
     /**
