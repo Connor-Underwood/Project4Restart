@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 /**
  * Connor Underwood, Zeyad Adham, Suhani Yadav, Neel Acharya
- *
+ * <p>
  * A Seller class
  */
 public class Seller {
-    private ArrayList<Store> stores; // stores for each seller -- can add a store but can never remove a store
+    public ArrayList<Store> stores; // stores for each seller -- can add a store but can never remove a store
 
     private String pin; // unique String pin for each seller -- 4 digits, CANNOT BE CHANGED!!!
 
@@ -18,9 +18,8 @@ public class Seller {
 
 
     /**
-     *
-     * @param pin read from market.csv
-     * @param email read from market.csv
+     * @param pin      read from market.csv
+     * @param email    read from market.csv
      * @param password read from market.csv
      */
     public Seller(String pin, String email, String password) {
@@ -35,7 +34,92 @@ public class Seller {
     }
 
     public void setEmail(String newEmail) {
+        if (true) {
+            ArrayList<String> lines = new ArrayList<>();
+            try (BufferedReader reader = new BufferedReader(new FileReader("accounts.csv"))) {
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    String[] arr = line.split(",");
+                    if (line.contains(this.email)) {
+                        line = arr[0] + "," + newEmail + "," + arr[2] + ",";
+                    }
+                    lines.add(line);
+                }
+            } catch (IOException io) {
+                System.out.println("Error reading to the accounts.csv file.");
+            }
+
+            try (PrintWriter writer = new PrintWriter(new FileWriter("accounts.csv"))) {
+                for (int i = 0; i < lines.size(); i++) {
+                    writer.println(lines.get(i));
+                    writer.flush();
+                }
+            } catch (IOException io) {
+                System.out.println("Error writing to the accounts.csv file.");
+            }
+
+        }
+        if (true) {
+            ArrayList<String> strings = new ArrayList<>();
+            try (BufferedReader reader = new BufferedReader(new FileReader("market.csv"))) {
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    String[] arr = line.split(",");
+                    if (arr[1].equalsIgnoreCase(this.email)) {
+                        if (arr.length > 3) {
+                            line = arr[0] + "," + newEmail + "," + arr[2] + "," + arr[3] + ",";
+                            if (arr.length > 4) {
+                                for (int i = 4; i < arr.length; i++) {
+                                    line += arr[i] + ",";
+                                }
+                            }
+                        } else {
+                            line = arr[0] + "," + newEmail + "," + arr[2] + ",";
+                        }
+                    }
+                    strings.add(line);
+                }
+            } catch (IOException io) {
+                System.out.println("Error reading to the market.csv file.");
+            }
+            try (PrintWriter writer = new PrintWriter(new FileWriter("market.csv"))) {
+                for (int i = 0; i < strings.size(); i++) {
+                    writer.println(strings.get(i));
+                    writer.flush();
+                }
+            } catch (IOException io) {
+                System.out.println("Error writing to the market.csv file.");
+            }
+        }
+        if (true) {
+            ArrayList<String> strings = new ArrayList<>();
+            try (BufferedReader reader = new BufferedReader(new FileReader("stores.csv"))) {
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    String[] arr = line.split(",");
+                    if (arr[4].equalsIgnoreCase(this.email)) {
+                        line = arr[0] + "," + arr[1] + "," + arr[2] + "," + arr[3] + "," + newEmail + ",";
+                        for (int i = 5; i < arr.length; i++) {
+                            line += arr[i] + ",";
+                        }
+
+                    }
+                    strings.add(line);
+                }
+            } catch (IOException io) {
+                System.out.println("Error reading to the stores.csv file.");
+            }
+            try (PrintWriter writer = new PrintWriter(new FileWriter("stores.csv"))) {
+                for (int i = 0; i < strings.size(); i++) {
+                    writer.println(strings.get(i));
+                    writer.flush();
+                }
+            } catch (IOException io) {
+                System.out.println("Error writing to the stores.csv file.");
+            }
+        }
         this.email = newEmail;
+
     } // in event of change email
 
     public String getPassword() {
@@ -43,6 +127,90 @@ public class Seller {
     }
 
     public void setPassword(String newPassword) {
+        if (true) {
+            ArrayList<String> lines = new ArrayList<>();
+            try (BufferedReader reader = new BufferedReader(new FileReader("accounts.csv"))) {
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    String[] arr = line.split(",");
+                    if (line.contains(this.email)) {
+                        line = arr[0] + "," + arr[1] + "," + newPassword + ",";
+                    }
+                    lines.add(line);
+                }
+            } catch (IOException io) {
+                System.out.println("Error reading to the accounts.csv file.");
+            }
+
+            try (PrintWriter writer = new PrintWriter(new FileWriter("accounts.csv"))) {
+                for (int i = 0; i < lines.size(); i++) {
+                    writer.println(lines.get(i));
+                    writer.flush();
+                }
+            } catch (IOException io) {
+                System.out.println("Error writing to the accounts.csv file.");
+            }
+
+        }
+        if (true) {
+            ArrayList<String> strings = new ArrayList<>();
+            try (BufferedReader reader = new BufferedReader(new FileReader("market.csv"))) {
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    String[] arr = line.split(",");
+                    if (arr[1].equalsIgnoreCase(this.email)) {
+                        if (arr.length > 3) {
+                            line = arr[0] + "," + arr[1] + "," + newPassword + "," + arr[3] + ",";
+                            if (arr.length > 4) {
+                                for (int i = 4; i < arr.length; i++) {
+                                    line += arr[i] + ",";
+                                }
+                            }
+                        } else {
+                            line = arr[0] + "," + arr[1] + "," + newPassword + ",";
+                        }
+                    }
+                    strings.add(line);
+                }
+            } catch (IOException io) {
+                System.out.println("Error reading to the market.csv file.");
+            }
+            try (PrintWriter writer = new PrintWriter(new FileWriter("market.csv"))) {
+                for (int i = 0; i < strings.size(); i++) {
+                    writer.println(strings.get(i));
+                    writer.flush();
+                }
+            } catch (IOException io) {
+                System.out.println("Error writing to the market.csv file.");
+            }
+        }
+        if (true) {
+            ArrayList<String> strings = new ArrayList<>();
+            try (BufferedReader reader = new BufferedReader(new FileReader("stores.csv"))) {
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    String[] arr = line.split(",");
+                    if (arr[4].equalsIgnoreCase(this.email)) {
+                        line = arr[0] + "," + arr[1] + "," + arr[2] + "," + arr[3] + "," + arr[4] + "," + newPassword + ",";
+                        for (int i = 6; i < arr.length; i++) {
+                            line += arr[i] + ",";
+                        }
+
+                    }
+                    strings.add(line);
+                }
+            } catch (IOException io) {
+                System.out.println("Error reading to the stores.csv file.");
+            }
+            try (PrintWriter writer = new PrintWriter(new FileWriter("stores.csv"))) {
+                for (int i = 0; i < strings.size(); i++) {
+                    writer.println(strings.get(i));
+                    writer.flush();
+                }
+            } catch (IOException io) {
+                System.out.println("Error writing to the stores.csv file.");
+            }
+        }
         this.password = newPassword;
     } // in event of change password
 
@@ -60,7 +228,7 @@ public class Seller {
             Seller seller = (Seller) obj;
             return ((seller.getStores().equals(this.stores)) &&
                     (seller.getEmail().equals(this.email)) && seller.getPin().equals(this.pin)
-            && (seller.getPassword().equals(this.password)));
+                    && (seller.getPassword().equals(this.password)));
         }
         return false;
     }
@@ -80,7 +248,7 @@ public class Seller {
     }
 
     /**
-     * @param store The store object we want to add to this Seller object's ArrayList of Stores
+     * @param store     The store object we want to add to this Seller object's ArrayList of Stores
      * @param writeFile A boolean determining if we want to write this data to the market.csv file or not
      * @return Returns a boolean value determining if the Store object was successfully added to
      * this Seller's ArrayList of Stores
@@ -113,8 +281,8 @@ public class Seller {
     } // in event of adding a store
 
     /**
-     * @param store The Store object we want to add the Shoe to
-     * @param shoe The Shoe object we are adding to the specific Store object
+     * @param store     The Store object we want to add the Shoe to
+     * @param shoe      The Shoe object we are adding to the specific Store object
      * @param writeFile A boolean value determining if we want to write this data to a file or not
      * @return Returns a boolean determining whether the Shoe object successfully added to the Store object
      */
@@ -124,8 +292,12 @@ public class Seller {
                 if (!store.checkShoe(shoe)) { // we need to check if this store already owns this Shoe object
                     int index = stores.indexOf(store);
                     Store s = stores.get(index);
-                    s.addShoe(shoe);
-                    stores.set(index, s);
+                    if (s.addShoe(shoe)) {
+                        stores.set(index, s);
+                    } else {
+                        return false;
+                    }
+
 
                     ArrayList<String> updatedMarket = new ArrayList<>();
                     try (BufferedReader reader = new BufferedReader(new FileReader("market.csv"))) {
@@ -187,8 +359,8 @@ public class Seller {
     }
 
     /**
-     * @param store The store object that contains the shoe we want to remove
-     * @param shoe The Shoe object we want to remove this Seller object
+     * @param store     The store object that contains the shoe we want to remove
+     * @param shoe      The Shoe object we want to remove this Seller object
      * @param writeFile Boolean value determining if we want to write this to the file or not
      * @return Returns a boolean value determining if the
      */
@@ -210,9 +382,9 @@ public class Seller {
                                     && line.toLowerCase().contains(shoe.getName().toLowerCase())) {
                                 String[] lineArray = line.split(",");
                                 Store sto = new Store(lineArray[3], this);
-                                for (int i = 4; i < lineArray.length; i+=4) {
-                                    Shoe shoo = new Shoe(sto, lineArray[i], lineArray[i+1], Double.parseDouble(lineArray[i+2]),
-                                            Integer.parseInt(lineArray[i+3]));
+                                for (int i = 4; i < lineArray.length; i += 4) {
+                                    Shoe shoo = new Shoe(sto, lineArray[i], lineArray[i + 1], Double.parseDouble(lineArray[i + 2]),
+                                            Integer.parseInt(lineArray[i + 3]));
                                     sto.addShoe(shoo);
                                 }
                                 for (Shoe shoeObj : sto.getShoes()) {
