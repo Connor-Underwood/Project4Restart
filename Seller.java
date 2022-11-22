@@ -501,62 +501,66 @@ public class Seller {
 
     public void importProducts(String filePath) {
         ArrayList<String> newArrayList = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            PrintWriter writer = new PrintWriter(new FileWriter("market.csv",true));
+        if (filePath.equals(this.email + ".csv")) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+                PrintWriter writer = new PrintWriter(new FileWriter("market.csv",true));
 
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                String[] arr = line.split(",");
-                int index = -1;
-                for (int i = 0; i < this.getStores().size(); i++) {
-                    if (this.getStores().get(i).getName().equalsIgnoreCase(arr[0])) {
-                        index = i;
-                    }
-                }
-                if (index != -1) {
-                    Store store = this.getStores().get(index);
-                    Shoe shoe = new Shoe(store, arr[1], arr[2], Double.parseDouble(arr[3]), Integer.parseInt(arr[4]));
-                    store.addShoe(shoe);
-                    this.stores.set(index, store);
-                    newArrayList.add(line);
-                } else {
-                    Store store = new Store(arr[0], this);
-                    Shoe shoe = new Shoe(store, arr[1], arr[2], Double.parseDouble(arr[3]), Integer.parseInt(arr[4]));
-                    store.addShoe(shoe);
-                    writer.println(this.pin + "," + this.email + "," + this.password + "," + line);
-                    writer.flush();
-                    this.stores.add(store);
-                }
-            }
-        } catch (IOException io) {
-            System.out.println("Error writing to the " + this.email + ".csv" + "file.");
-        }
-        ArrayList<String> market = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("market.csv"))) {
-
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                for (int i = 0; i < newArrayList.size(); i++) {
+                String line = "";
+                while ((line = reader.readLine()) != null) {
                     String[] arr = line.split(",");
-                    String[] arr1 = newArrayList.get(i).split(",");
-                    if (arr.length > 4) {
-                        if (arr[3].equalsIgnoreCase(arr1[0])) {
-                            line += arr1[1] + "," + arr1[2] + "," + arr1[3] + "," + arr1[4] + ",";
+                    int index = -1;
+                    for (int i = 0; i < this.getStores().size(); i++) {
+                        if (this.getStores().get(i).getName().equalsIgnoreCase(arr[0])) {
+                            index = i;
                         }
                     }
+                    if (index != -1) {
+                        Store store = this.getStores().get(index);
+                        Shoe shoe = new Shoe(store, arr[1], arr[2], Double.parseDouble(arr[3]), Integer.parseInt(arr[4]));
+                        store.addShoe(shoe);
+                        this.stores.set(index, store);
+                        newArrayList.add(line);
+                    } else {
+                        Store store = new Store(arr[0], this);
+                        Shoe shoe = new Shoe(store, arr[1], arr[2], Double.parseDouble(arr[3]), Integer.parseInt(arr[4]));
+                        store.addShoe(shoe);
+                        writer.println(this.pin + "," + this.email + "," + this.password + "," + line);
+                        writer.flush();
+                        this.stores.add(store);
+                    }
                 }
-                market.add(line);
+            } catch (IOException io) {
+                System.out.println("Error writing to the " + this.email + ".csv" + "file.");
             }
-        } catch (IOException io) {
-            System.out.println("Error reading to the market.csv file.");
-        }
-        try (PrintWriter writer = new PrintWriter(new FileWriter("market.csv"))) {
-            for (String line : market) {
-                writer.println(line);
-                writer.flush();
+            ArrayList<String> market = new ArrayList<>();
+            try (BufferedReader reader = new BufferedReader(new FileReader("market.csv"))) {
+
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    for (int i = 0; i < newArrayList.size(); i++) {
+                        String[] arr = line.split(",");
+                        String[] arr1 = newArrayList.get(i).split(",");
+                        if (arr.length > 4) {
+                            if (arr[3].equalsIgnoreCase(arr1[0])) {
+                                line += arr1[1] + "," + arr1[2] + "," + arr1[3] + "," + arr1[4] + ",";
+                            }
+                        }
+                    }
+                    market.add(line);
+                }
+            } catch (IOException io) {
+                System.out.println("Error reading to the market.csv file.");
             }
-        } catch (IOException io) {
-            System.out.println("Error writing to the market.csv file");
+            try (PrintWriter writer = new PrintWriter(new FileWriter("market.csv"))) {
+                for (String line : market) {
+                    writer.println(line);
+                    writer.flush();
+                }
+            } catch (IOException io) {
+                System.out.println("Error writing to the market.csv file");
+            }
+        } else {
+            System.out.println("Cannot import products from a different seller!");
         }
     }
 
