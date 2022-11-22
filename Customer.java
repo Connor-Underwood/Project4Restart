@@ -3,6 +3,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.io.*;
+
 /**
  * Connor Underwood, Zeyad Adham, Suhani Yadav, Neel Acharya
  *
@@ -37,6 +38,9 @@ public class Customer {
     }
     public int getTotalAmount() {
         return this.totalAmountPurchased;
+    }
+    public ArrayList<Shoe> getPurchaseHistory() {
+        return this.purchaseHistory;
     }
 
     public String getPin() {
@@ -109,7 +113,7 @@ public class Customer {
             String line = "";
             while ((line = reader.readLine()) != null) {
                 String[] arr = line.split(",");
-                if (line.contains(this.password)) {
+                if (line.contains(this.password) && line.contains(this.pin)) {
                     line = arr[0] + "," + arr[1] + "," + newPassword + ",";
                 }
                 lines.add(line);
@@ -130,7 +134,7 @@ public class Customer {
             String line = "";
             while ((line = reader.readLine()) != null) {
                 String[] arr = line.split(",");
-                if (line.contains(this.password)) {
+                if (line.contains(this.password) && line.contains(this.pin)) {
                     line = arr[0] + "," + arr[1] + "," + newPassword + ",";
                     for (int i = 3; i < arr.length; i++) {
                         line += arr[i] + ",";
@@ -163,15 +167,7 @@ public class Customer {
             }
         }
     }
-    /**
-     * Customers can view a dashboard with store and seller information.
-     * Data will include a list of stores by number of products sold and
-     * a list of stores by the products purchased by that particular customer.
-     * Customers can choose to sort the dashboard.
-     */
-    public void viewStatistics() {
 
-    }
 
     /**
      * @param search Boolean value. Will ask in main if user would like to search
@@ -384,7 +380,7 @@ public class Customer {
             while ((line = reader.readLine()) != null) {
                 String[] arr = line.split(",");
                 if (arr.length > 4) {
-                    if (arr[3].equalsIgnoreCase(store.getName())) {
+                    if (arr[3].equalsIgnoreCase(store.getName()) && arr[0].equals(store.getSeller().getPin())) {
                         for (int i = 4; i < arr.length; i+=4) {
                             Shoe tempShoe = new Shoe(store, arr[i], arr[i+1], Double.parseDouble(arr[i+2]), Integer.parseInt(arr[i+3]));
                             if (tempShoe.equalsShoe(shoe)) {
@@ -427,7 +423,7 @@ public class Customer {
             store.setRevenue(store.getRevenue() + (amount * shoe.getPrice()));
             while ((line = reader.readLine()) != null) {
                 String[] arr = line.split(",");
-                if (!line.contains(this.pin) && line.contains(store.getSeller().getPin()) &&
+                if (line.contains(this.pin) && line.contains(store.getSeller().getPin()) &&
                         line.contains(store.getName()) && !line.contains(shoe.getName())) {
                     line = this.pin + "," + this.email + "," + this.password + "," + store.getSeller().getPin() + "," +
                             store.getSeller().getEmail() + "," + store.getSeller().getPassword() + "," + store.getName() + "," + store.getSales() + "," +
@@ -439,7 +435,8 @@ public class Customer {
                             + "," + shoe.getQuantity() + ",";
                     append = false;
                 }
-                else if (line.contains(shoe.getName())) {
+                else if (line.contains(this.pin) && line.contains(store.getSeller().getPin()) &&
+                        line.contains(store.getName()) && line.contains(shoe.getName())) {
                     line = this.pin + "," + this.email + "," + this.password + "," + store.getSeller().getPin() + "," +
                             store.getSeller().getEmail() + "," + store.getSeller().getPassword() + "," + store.getName() + "," + store.getSales() + "," +
                             store.getRevenue() + "," + (Integer.parseInt(arr[9]) + amount)+ ",";
@@ -538,6 +535,8 @@ public class Customer {
         }
         return null;
     } // used to find a shoe when looking to purchase
+
+
 
 
 }
