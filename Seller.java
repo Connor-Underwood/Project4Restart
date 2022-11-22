@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 
 /**
@@ -40,7 +41,7 @@ public class Seller {
                 String line = "";
                 while ((line = reader.readLine()) != null) {
                     String[] arr = line.split(",");
-                    if (line.contains(this.email)) {
+                    if (line.contains(this.email) && line.contains(this.pin)) {
                         line = arr[0] + "," + newEmail + "," + arr[2] + ",";
                     }
                     lines.add(line);
@@ -65,7 +66,7 @@ public class Seller {
                 String line = "";
                 while ((line = reader.readLine()) != null) {
                     String[] arr = line.split(",");
-                    if (arr[1].equalsIgnoreCase(this.email)) {
+                    if (arr[1].equalsIgnoreCase(this.email) && line.contains(this.pin)) {
                         if (arr.length > 3) {
                             line = arr[0] + "," + newEmail + "," + arr[2] + "," + arr[3] + ",";
                             if (arr.length > 4) {
@@ -97,7 +98,7 @@ public class Seller {
                 String line = "";
                 while ((line = reader.readLine()) != null) {
                     String[] arr = line.split(",");
-                    if (arr[4].equalsIgnoreCase(this.email)) {
+                    if (arr[4].equalsIgnoreCase(this.email) && line.contains(this.pin)) {
                         line = arr[0] + "," + arr[1] + "," + arr[2] + "," + arr[3] + "," + newEmail + ",";
                         for (int i = 5; i < arr.length; i++) {
                             line += arr[i] + ",";
@@ -133,7 +134,7 @@ public class Seller {
                 String line = "";
                 while ((line = reader.readLine()) != null) {
                     String[] arr = line.split(",");
-                    if (line.contains(this.email)) {
+                    if (line.contains(this.email) && line.contains(this.pin)) {
                         line = arr[0] + "," + arr[1] + "," + newPassword + ",";
                     }
                     lines.add(line);
@@ -158,7 +159,7 @@ public class Seller {
                 String line = "";
                 while ((line = reader.readLine()) != null) {
                     String[] arr = line.split(",");
-                    if (arr[1].equalsIgnoreCase(this.email)) {
+                    if (arr[1].equalsIgnoreCase(this.email) && line.contains(this.pin)) {
                         if (arr.length > 3) {
                             line = arr[0] + "," + arr[1] + "," + newPassword + "," + arr[3] + ",";
                             if (arr.length > 4) {
@@ -190,7 +191,7 @@ public class Seller {
                 String line = "";
                 while ((line = reader.readLine()) != null) {
                     String[] arr = line.split(",");
-                    if (arr[4].equalsIgnoreCase(this.email)) {
+                    if (arr[4].equalsIgnoreCase(this.email) && line.contains(this.pin)) {
                         line = arr[0] + "," + arr[1] + "," + arr[2] + "," + arr[3] + "," + arr[4] + "," + newPassword + ",";
                         for (int i = 6; i < arr.length; i++) {
                             line += arr[i] + ",";
@@ -449,4 +450,55 @@ public class Seller {
     public ArrayList<Store> getStores() {
         return this.stores;
     }
+
+
+    public void viewStatistics(boolean sort, int sortBy) {
+
+        // would you like to sort --> would you like to sort by
+        // Customer1 == 50
+        // Customer2 == 49
+        // Customer3 == 25
+
+
+        // 2nd way
+        // Store 1 == 50 sales
+        // product1,product2,product3
+        // Store 2 == 25 sales
+        if (sort) {
+            ArrayList<Integer> customerSales = new ArrayList<>();
+            ArrayList<Customer> customers = new ArrayList<>();
+            if (sortBy == 1) {
+                for (int i = 0; i < stores.size(); i++) {
+                    customers.addAll(stores.get(i).getCustomers());
+                }
+                customers.sort(Comparator.comparingInt(Customer::getTotalAmount));
+
+                for (int i = customers.size() -1; i >= 0; i--) {
+                    System.out.println(customers.get(i).getEmail() + ": " + customers.get(i).getTotalAmount() + " Purchases Made.");
+                }
+            } else {
+                stores.sort(Comparator.comparingInt(Store::getSales));
+                for (int i = stores.size() - 1; i >= 0; i--) {
+                    System.out.println(stores.get(i).getName() + ": " + stores.get(i).getSales() + " Sales Made.");
+                }
+            }
+        }
+        else {
+            // Data will include a list of customers with the number of
+            // items that they have purchased and a list of products with the number of sales.
+            // Store 1:
+            // Customer 1: 50 sales --> product1, product2, product3
+            for (int i = 0; i < stores.size(); i++) {
+                System.out.println("Store " + (i+1) + ": " + stores.get(i).getName() + " --> Sales: " + stores.get(i).getSales());
+                for (int j = 0; j < stores.get(i).getCustomers().size(); j++) {
+                    System.out.println("Customer " + (j+1) + ": " + stores.get(i).getCustomers().get(j).getEmail());
+                    for (int k = 0; k < stores.get(i).getCustomers().get(j).getPurchaseHistory().size(); k++) {
+                        System.out.print("[" + stores.get(i).getCustomers().get(j).getPurchaseHistory().get(k).getName() + "] " + "\n");
+                    }
+                }
+            }
+        }
+    }
+
+
 }
