@@ -156,16 +156,46 @@ public class Customer {
         this.password = newPassword;
     }
 
-    public void viewPurchaseHistory() {
-        if (purchaseHistory.size() == 0) {
-            System.out.println("You have no shoes in your purchase history.");
+    public void viewPurchaseHistory(boolean export) {
+        if (export) {
+            File f = new File(this.email + ".txt");
+            if (f.exists()) {
+                if (purchaseHistory.size() == 0) {
+                    System.out.println("You have no shoes in your purchase history.");
+                } else {
+                    try (PrintWriter writer = new PrintWriter(new FileWriter(this.email + ".txt"))) {
+                        writer.println("Total Shoes Purchased: " + totalAmountPurchased);
+                        writer.flush();
+                        for (int i = 0; i < purchaseHistory.size(); i++) {
+                            writer.println("Shoe: " + purchaseHistory.get(i).getName());
+                            writer.flush();
+                            writer.println("Price: " + purchaseHistory.get(i).getPrice());
+                            writer.flush();
+                        }
+                    } catch (IOException io) {
+                        System.out.println("Error writing to the " + this.email + ".txt file.");
+                    }
+                }
+            } else {
+                try{
+                    boolean b = f.createNewFile();
+
+                } catch (IOException io) {
+                    System.out.println("Error creating " + this.email + ".txt.");
+                }
+            }
         } else {
-            System.out.println("Total Shoes Purchased: " + totalAmountPurchased);
-            for (int i = 0; i < purchaseHistory.size(); i++) {
-                System.out.println("Shoe: " + purchaseHistory.get(i).getName());
-                System.out.println("Price: " + purchaseHistory.get(i).getPrice());
+            if (purchaseHistory.size() == 0) {
+                System.out.println("You have no shoes in your purchase history.");
+            } else {
+                System.out.println("Total Shoes Purchased: " + totalAmountPurchased);
+                for (int i = 0; i < purchaseHistory.size(); i++) {
+                    System.out.println("Shoe: " + purchaseHistory.get(i).getName());
+                    System.out.println("Price: " + purchaseHistory.get(i).getPrice());
+                }
             }
         }
+
     }
 
 
