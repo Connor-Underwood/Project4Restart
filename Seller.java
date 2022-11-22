@@ -541,7 +541,7 @@ public class Seller {
                     String[] arr1 = newArrayList.get(i).split(",");
                     if (arr.length > 4) {
                         if (arr[3].equalsIgnoreCase(arr1[0])) {
-                            line += arr1[1] + "," + arr1[2] + "," + arr1[3] + "," + arr1[4];
+                            line += arr1[1] + "," + arr1[2] + "," + arr1[3] + "," + arr1[4] + ",";
                         }
                     }
                 }
@@ -557,6 +557,41 @@ public class Seller {
             }
         } catch (IOException io) {
             System.out.println("Error writing to the market.csv file");
+        }
+    }
+
+    public void exportProducts(String fileName) {
+        File f = new File(fileName);
+        try {
+            boolean v = f.createNewFile();
+        } catch (IOException ex) {
+            System.out.println("Error writing to the file!");
+        }
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("market.csv"));
+            PrintWriter writer = new PrintWriter(new FileWriter(f));
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                String[] arr = line.split(",");
+                if (arr[0].equals(this.pin)) {
+                    if (arr.length > 4) {
+                        writer.println("Store:" + arr[3]);
+                        writer.flush();
+                        int count = 1;
+                        for (int i = 4; i < arr.length; i += 4) {
+                            writer.println("Product " + count + ":" + arr[i] + "," + arr[i + 1] + "," + arr[i + 2] + "," + arr[i + 3]);
+                            writer.flush();
+                            count++;
+                        }
+                    } else if (arr.length == 4) {
+                        writer.println("Store:" + arr[3]);
+                        writer.println("No products yet");
+                        writer.flush();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error writing to the file");
         }
     }
 }
