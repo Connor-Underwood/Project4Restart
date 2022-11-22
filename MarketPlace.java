@@ -202,20 +202,25 @@ public class MarketPlace {
                                 sellerIndex = i;
                             }
                         }
-                        seller = sellers.get(sellerIndex);
-                        int storeIndex = -1;
-                        for (int i = 0; i < seller.getStores().size(); i++) {
-                            if (seller.getStores().get(i).getName().equalsIgnoreCase(arr[6])) {
-                                storeIndex = i;
+                        if (sellerIndex != -1) {
+                            seller = sellers.get(sellerIndex);
+                            int storeIndex = -1;
+                            for (int i = 0; i < seller.getStores().size(); i++) {
+                                if (seller.getStores().get(i).getName().equalsIgnoreCase(arr[6])) {
+                                    storeIndex = i;
+                                }
                             }
+                            if (storeIndex != -1) {
+                                Store store = sellers.get(sellerIndex).getStores().get(storeIndex);
+                                for (int i = 10; i < arr.length; i += 4) {
+                                    Shoe shoe = new Shoe(store, arr[i], arr[i + 1], Double.parseDouble(arr[i + 2]), Integer.parseInt(arr[i + 3]));
+                                    customer.addPurchaseHistory(shoe);
+                                }
+                                customer.addTotalAmount(Integer.parseInt(arr[9]));
+                                customers.set(index, customer);
+                            }
+
                         }
-                        Store store = sellers.get(sellerIndex).getStores().get(storeIndex);
-                        for (int i = 10; i < arr.length; i += 4) {
-                            Shoe shoe = new Shoe(store, arr[i], arr[i + 1], Double.parseDouble(arr[i + 2]), Integer.parseInt(arr[i + 3]));
-                            customer.addPurchaseHistory(shoe);
-                        }
-                        customer.addTotalAmount(Integer.parseInt(arr[9]));
-                        customers.set(index, customer);
                     }
                 }
             } catch (IOException io) {
