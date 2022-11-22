@@ -500,5 +500,36 @@ public class Seller {
         }
     }
 
+    public void importProducts(String filePath) {
+        ArrayList<String> shoes = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                String[] arr = line.split(",");
+                int index = -1;
+                for (int i = 0; i < this.getStores().size(); i++) {
+                    if (this.getStores().get(i).getName().equalsIgnoreCase(arr[0])) {
+                        index = i;
+                    }
+                }
+                Store store = this.getStores().get(index);
+                for (int i = 1; i < arr.length; i++) {
+                    Shoe shoe = new Shoe(store, arr[i], arr[i+1], Double.parseDouble(arr[i+2]), Integer.parseInt(arr[i+3]));
+                    store.addShoe(shoe);
+                }
+                this.stores.set(index, store);
+                shoes.add(line);
+            }
+        } catch (IOException io) {
+            System.out.println("Error writing to the " + this.email + ".csv" + "file.");
+        }
+        
+        try (PrintWriter writer = new PrintWriter(new FileWriter("market.csv"))) {
+            
+        } catch (IOException io) {
+            System.out.println("Error writing to the market.csv");
+        }
+    }
+
 
 }
