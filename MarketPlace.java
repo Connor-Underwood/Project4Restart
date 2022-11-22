@@ -34,6 +34,7 @@ public class MarketPlace {
     public static final String CHANGE_SELLER_EMAIL = "6: Change e-mail.";
     public static final String CHANGE_SELLER_PASSWORD = "7: Change password.";
     public static final String IMPORT_PRODUCTS = "8: Import products from a file";
+    public static final String EXPORT_PRODUCTS = "9: Export products to a file";
     // End of Seller Prompts
 
     // Customer Prompts
@@ -546,6 +547,7 @@ public class MarketPlace {
                 System.out.println(CHANGE_SELLER_EMAIL);
                 System.out.println(CHANGE_SELLER_PASSWORD);
                 System.out.println(IMPORT_PRODUCTS);
+                System.out.println(EXPORT_PRODUCTS);
                 choice = scanner.nextLine();
                 switch (choice) {
                     case "1":
@@ -720,6 +722,13 @@ public class MarketPlace {
                         System.out.println("Enter the file path.");
                         response = scanner.nextLine();
                         seller.importProducts(response);
+                        break;
+                    case "9":
+                        System.out.println("Enter the name of the file you would like to see your products in:");
+                        response = scanner.nextLine();
+                        seller.exportProducts(response);
+                        System.out.println("Your products have been printed in " + response);
+
                         break;
                     default:
                         System.out.println(INVALID_VALUE);
