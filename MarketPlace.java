@@ -33,13 +33,14 @@ public class MarketPlace {
     public static final String VIEW_STATISTICS = "5: View your sales information.";
     public static final String CHANGE_SELLER_EMAIL = "6: Change e-mail.";
     public static final String CHANGE_SELLER_PASSWORD = "7: Change password.";
+    public static final String IMPORT_PRODUCTS = "8: Import products from a file";
     // End of Seller Prompts
 
     // Customer Prompts
     public static final String VIEW_MARKET = "1: View Entire Market";
     public static final String SEARCH_MARKET = "2: Search Market";
     public static final String REVIEW_PURCHASE_HISTORY = "3: Review Purchase History";
-    public static final String EXPORT_SHOE = "4: Export shoe as a file";
+    public static final String EXPORT_SHOE = "4: Export Purchase History as a file.";
     public static final String CHANGE_CUSTOMER_EMAIL = "5: Change e-mail.";
     public static final String CHANGE_CUSTOMER_PASSWORD = "6: Change password";
     public static final String PURCHASE_SHOE = "7: Purchase a shoe.";
@@ -544,6 +545,7 @@ public class MarketPlace {
                 System.out.println(VIEW_STATISTICS);
                 System.out.println(CHANGE_SELLER_EMAIL);
                 System.out.println(CHANGE_SELLER_PASSWORD);
+                System.out.println(IMPORT_PRODUCTS);
                 choice = scanner.nextLine();
                 switch (choice) {
                     case "1":
@@ -713,6 +715,11 @@ public class MarketPlace {
                         }
                         seller.setPassword(password);
                         sellers.set(index, seller);
+                        break;
+                    case "8":
+                        System.out.println("Enter the file path.");
+                        response = scanner.nextLine();
+
                         break;
                     default:
                         System.out.println(INVALID_VALUE);
@@ -902,9 +909,10 @@ public class MarketPlace {
                         }
                         break;
                     case "3":
-                        customer.viewPurchaseHistory();
+                        customer.viewPurchaseHistory(false);
                         break;
                     case "4":
+                        customer.viewPurchaseHistory(true);
                         break;
                     case "5":
                         System.out.println("What do you want your new e-mail to be?");
@@ -941,36 +949,44 @@ public class MarketPlace {
                                 break;
                             }
                         }
-                        Seller seller = sellers.get(someIndex); // find SPECIFIC SELLER IN OUR ARRAYLIST
-                        int storeIndex = -1;
-                        for (int i = 0; i < seller.getStores().size(); i++) {
-                            if (seller.getStores().get(i).getName().equalsIgnoreCase(storeName)) {
-                                storeIndex = i;
-                            }
-                        }
-                        Store store = sellers.get(someIndex).getStores().get(storeIndex); // FIND SPECIFIC STORE
-                        Shoe shoe = customer.findShoe(shoeName, storeName);
-                        if (shoe != null) {
-                            System.out.println("Store: " + shoe.getStore().getName());
-                            System.out.println("Name: " + shoe.getName());
-                            System.out.println("Description: " + shoe.getDescription());
-                            System.out.println("Price: " + shoe.getPrice());
-                            System.out.println("Quantity: " + shoe.getQuantity());
-                            System.out.println("1: Checkout\n2: Exit");
-                            response = scanner.nextLine();
-                            if ("1".equals(response)) {
-                                System.out.println("How many pairs would you like to purchase?");
-                                response = scanner.nextLine();
-                                if (Integer.parseInt(response) > shoe.getQuantity()) {
-                                    System.out.println("Sorry, we do not have that many pairs on stock.");
-                                } else {
-                                    customer.purchase(shoe, store, Integer.parseInt(response));
-                                    customers.set(index, customer);
-                                }
-
-                            }
+                        if (someIndex == -1) {
+                            System.out.println("We could not find a shoe based on that information.");
                         } else {
-                            System.out.println("Could not find a shoe based on that information.");
+                            Seller seller = sellers.get(someIndex); // find SPECIFIC SELLER IN OUR ARRAYLIST
+                            int storeIndex = -1;
+                            for (int i = 0; i < seller.getStores().size(); i++) {
+                                if (seller.getStores().get(i).getName().equalsIgnoreCase(storeName)) {
+                                    storeIndex = i;
+                                }
+                            }
+                            if (storeIndex == -1) {
+                                System.out.println("We could not find a shoe based on that information.");
+                            } else {
+                                Store store = sellers.get(someIndex).getStores().get(storeIndex); // FIND SPECIFIC STORE
+                                Shoe shoe = customer.findShoe(shoeName, storeName);
+                                if (shoe != null) {
+                                    System.out.println("Store: " + shoe.getStore().getName());
+                                    System.out.println("Name: " + shoe.getName());
+                                    System.out.println("Description: " + shoe.getDescription());
+                                    System.out.println("Price: " + shoe.getPrice());
+                                    System.out.println("Quantity: " + shoe.getQuantity());
+                                    System.out.println("1: Checkout\n2: Exit");
+                                    response = scanner.nextLine();
+                                    if ("1".equals(response)) {
+                                        System.out.println("How many pairs would you like to purchase?");
+                                        response = scanner.nextLine();
+                                        if (Integer.parseInt(response) > shoe.getQuantity()) {
+                                            System.out.println("Sorry, we do not have that many pairs on stock.");
+                                        } else {
+                                            customer.purchase(shoe, store, Integer.parseInt(response));
+                                            customers.set(index, customer);
+                                        }
+
+                                    }
+                                } else {
+                                    System.out.println("Could not find a shoe based on that information.");
+                                }
+                            }
                         }
                         break;
                     case "8":
