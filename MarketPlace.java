@@ -719,7 +719,7 @@ public class MarketPlace {
                     case "8":
                         System.out.println("Enter the file path.");
                         response = scanner.nextLine();
-
+                        seller.importProducts(response);
                         break;
                     default:
                         System.out.println(INVALID_VALUE);
