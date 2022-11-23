@@ -566,7 +566,4 @@ public class Customer {
         return null;
     } // used to find a shoe when looking to purchase
 
-
-
-
 }
