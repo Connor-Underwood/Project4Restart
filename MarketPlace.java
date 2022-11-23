@@ -368,9 +368,13 @@ public class MarketPlace {
                     stores.add(customer.getPurchaseHistory().get(i).getStore());
                 }
                 stores.sort(Comparator.comparingInt(Store::getSales));
-                for (int i = stores.size() - 1; i >= 0; i--) {
-                    System.out.println("Seller " + stores.get(i).getSeller().getEmail() + ":");
-                    System.out.println("Store " + stores.get(i).getName() + ": " + stores.get(i).getSales());
+                if (stores.size() != 0) {
+                    for (int i = stores.size() - 1; i >= 0; i--) {
+                        System.out.println("Seller " + stores.get(i).getSeller().getEmail() + ":");
+                        System.out.println("Store " + stores.get(i).getName() + ": " + stores.get(i).getSales());
+                    }
+                } else {
+                    System.out.println("You have not purchased from any stores yet.");
                 }
             }
         } else {
@@ -889,33 +893,41 @@ public class MarketPlace {
                                     break;
                                 }
                             }
-                            Seller seller = sellers.get(someIndex); // find SPECIFIC SELLER IN OUR ARRAYLIST
-                            int storeIndex = -1;
-                            for (int i = 0; i < seller.getStores().size(); i++) {
-                                if (seller.getStores().get(i).getName().equalsIgnoreCase(storeName)) {
-                                    storeIndex = i;
-                                }
-                            }
-                            Store store = sellers.get(someIndex).getStores().get(storeIndex); // FIND SPECIFIC STORE
-                            Shoe shoe = customer.findShoe(shoeName, storeName);
-                            if (shoe != null) {
-                                System.out.println("Store: " + shoe.getStore().getName());
-                                System.out.println("Name: " + shoe.getName());
-                                System.out.println("Description: " + shoe.getDescription());
-                                System.out.println("Price: " + shoe.getPrice());
-                                System.out.println("Quantity: " + shoe.getQuantity());
-                                System.out.println("1: Checkout\n2: Exit");
-                                response = scanner.nextLine();
-                                if ("1".equals(response)) {
-                                    System.out.println("How many pairs would you like to purchase?");
-                                    response = scanner.nextLine();
-                                    if (Integer.parseInt(response) > shoe.getQuantity()) {
-                                        System.out.println("Sorry, we do not have that many pairs on stock.");
-                                    } else {
-                                        customer.purchase(shoe, store, Integer.parseInt(response));
-                                        customers.set(index, customer);
+                            if (someIndex != -1) {
+                                Seller seller = sellers.get(someIndex); // find SPECIFIC SELLER IN OUR ARRAYLIST
+                                int storeIndex = -1;
+                                for (int i = 0; i < seller.getStores().size(); i++) {
+                                    if (seller.getStores().get(i).getName().equalsIgnoreCase(storeName)) {
+                                        storeIndex = i;
                                     }
+                                }
+                                if (storeIndex != -1) {
+                                    Store store = sellers.get(someIndex).getStores().get(storeIndex); // FIND SPECIFIC STORE
+                                    Shoe shoe = customer.findShoe(shoeName, storeName);
+                                    if (shoe != null) {
+                                        System.out.println("Store: " + shoe.getStore().getName());
+                                        System.out.println("Name: " + shoe.getName());
+                                        System.out.println("Description: " + shoe.getDescription());
+                                        System.out.println("Price: " + shoe.getPrice());
+                                        System.out.println("Quantity: " + shoe.getQuantity());
+                                        System.out.println("1: Checkout\n2: Exit");
+                                        response = scanner.nextLine();
+                                        if ("1".equals(response)) {
+                                            System.out.println("How many pairs would you like to purchase?");
+                                            response = scanner.nextLine();
+                                            if (Integer.parseInt(response) > shoe.getQuantity()) {
+                                                System.out.println("Sorry, we do not have that many pairs on stock.");
+                                            } else {
+                                                customer.purchase(shoe, store, Integer.parseInt(response));
+                                                customers.set(index, customer);
+                                            }
 
+                                        }
+                                    } else {
+                                        System.out.println("Could not find a shoe based on that information.");
+                                    }
+                                } else {
+                                    System.out.println("Could not find a shoe based on that information.");
                                 }
                             } else {
                                 System.out.println("Could not find a shoe based on that information.");
