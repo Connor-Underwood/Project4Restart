@@ -472,14 +472,21 @@ public class Seller {
                     customers.addAll(stores.get(i).getCustomers());
                 }
                 customers.sort(Comparator.comparingInt(Customer::getTotalAmount));
-
-                for (int i = customers.size() - 1; i >= 0; i--) {
-                    System.out.println(customers.get(i).getEmail() + ": " + customers.get(i).getTotalAmount() + " Purchases Made.");
+                if (customers.size() != 0) {
+                    for (int i = customers.size() - 1; i >= 0; i--) {
+                        System.out.println(customers.get(i).getEmail() + ": " + customers.get(i).getTotalAmount() + " Purchases Made.");
+                    }
+                } else {
+                    System.out.println("You have no customers from any of your stores.");
                 }
             } else {
                 stores.sort(Comparator.comparingInt(Store::getSales));
-                for (int i = stores.size() - 1; i >= 0; i--) {
-                    System.out.println(stores.get(i).getName() + ": " + stores.get(i).getSales() + " Sales Made.");
+                if (stores.size() != 0) {
+                    for (int i = stores.size() - 1; i >= 0; i--) {
+                        System.out.println(stores.get(i).getName() + ": " + stores.get(i).getSales() + " Sales Made.");
+                    }
+                } else {
+                    System.out.println("You have no stores yet.");
                 }
             }
         } else {
@@ -530,7 +537,7 @@ public class Seller {
                     }
                 }
             } catch (IOException io) {
-                System.out.println("Error writing to the " + this.email + ".csv" + "file.");
+                System.out.println("Error writing to the " + this.email + ".csv" + " file.");
             }
             ArrayList<String> market = new ArrayList<>();
             try (BufferedReader reader = new BufferedReader(new FileReader("market.csv"))) {
@@ -595,7 +602,7 @@ public class Seller {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error writing to the file");
+            System.out.println("Error writing to the " + fileName +  " file");
         }
     }
 }
